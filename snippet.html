@@ -1,25 +1,54 @@
-# Google tag manager integration
-
-1. Create new tag configuration to runn all pages and paste following code snippet
-
-Go to tags -> new Tag -> Custom HTML
-
-```html
 <div
   id="bliz__overlay_container_k7p9m2n4"
   class="bliz__overlay"
-  style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center;"
+  style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  "
 >
   <iframe
     src="{{BLIZ_WIDGET_URL}}"
     class="bliz__iframe"
-    style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; border: none;"
+    style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    "
     title="Promotion Widget"
   ></iframe>
   <button
     id="bliz__close_x8q1r5t2"
     class="bliz__close_btn"
-    style="position: absolute; top: 20px; right: 20px; background: #ffffff; border-radius: 50%; width: 40px; height: 40px; border: 2px solid #000000; cursor: pointer; font-size: 24px; font-weight: bold; z-index: 10000; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); color: #000000;"
+    style="
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #ffffff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      border: 2px solid #000000;
+      cursor: pointer;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      color: #000000;
+    "
   >
     ×
   </button>
@@ -105,24 +134,3 @@ Go to tags -> new Tag -> Custom HTML
     initWidget();
   }
 </script>
-```
-
-2. set trigger rule to run on all pages
-
-Go to tags -> Triggering -> All pages
-
-3. create new constant variable called BLIZ_WIDGET_URL and populate BLIZ_WIDGET_URL you want to display
-
-Go to -> Variables -> new -> name it BLIZ_WIDGET_URL -> variable configuration -> constant
-
-4. publish GTM tag.
-
-Go to top right menu -> submit changes.
-
-Thats it!
-
-# Deleting container
-
-Go to -> tags -> find created tag -> hit delete -> publish changes.
-
-https://bliz.cc/omja
