@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./snippet.js"></script>
+    <title>Product | FashionHub</title>
+    <style>
+      /* Reset and base styles (copied from index for consistency) */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        color: #333;
+        line-height: 1.6;
+      }
+
+      /* Header styles */
+      header {
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        z-index: 100;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 5%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+      }
+
+      .nav-links li {
+        margin-left: 2rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #2c3e50;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: #3498db;
+      }
+
+      /* Product detail section */
+      .product-detail {
+        padding: 8rem 5% 5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        gap: 4rem;
+      }
+
+      .product-img {
+        flex: 1;
+        height: 400px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .product-info {
+        flex: 1;
+      }
+
+      .product-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+      }
+
+      .product-description {
+        margin-bottom: 1.5rem;
+      }
+
+      .product-price {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #3498db;
+        margin-bottom: 2rem;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+      }
+
+      /* Footer (copied from index for consistency) */
+      footer {
+        background-color: #1a252f;
+        color: #fff;
+        padding: 3rem 5%;
+        text-align: center;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .social-links {
+        margin: 1.5rem 0;
+      }
+
+      .social-links a {
+        color: #fff;
+        margin: 0 0.5rem;
+        font-size: 1.5rem;
+        text-decoration: none;
+      }
+
+      .copyright {
+        margin-top: 2rem;
+        color: #bdc3c7;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .product-detail {
+          flex-direction: column;
+        }
+      }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+      <nav class="navbar">
+        <div class="logo">FashionHub</div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#featured">Products</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Product Detail Section -->
+    <section class="product-detail">
+      <img src="/api/placeholder/600/400" alt="Product Image" class="product-img" />
+      <div class="product-info">
+        <h1 class="product-title">Classic White Tee</h1>
+        <p class="product-description">
+          Our Classic White Tee is made from 100% organic cotton, providing ultimate comfort and style. Perfect for everyday wear, this timeless piece features a relaxed fit, crew neck, and durable stitching. Available in multiple sizes.
+        </p>
+        <p class="product-price">$29.99</p>
+        <a href="checkout.html" class="btn">Proceed to Checkout</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="logo">FashionHub</div>
+        <div class="social-links">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">Twitter</a>
+          <a href="#">Pinterest</a>
+        </div>
+        <p>123 Fashion Street, Style City, SC 12345</p>
+        <p>Email: info@fashionhub.com | Phone: (123) 456-7890</p>
+        <p class="copyright">© 2025 FashionHub. All rights reserved.</p>
+      </div>
+    </footer>
+</body>
+</html>
