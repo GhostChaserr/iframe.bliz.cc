@@ -1,9 +1,10 @@
 /**
- * Bliz Tracking Script v1.2
+ * Bliz Tracking Script v1.3
  * Auto-initializing client-side analytics collector
  * Loads session_id from URL params and stores in sessionStorage
  * Extracts API key from script data-key attribute and adds as Authorization header
  * Fixed CORS handling for cross-origin requests
+ * Enhanced page view tracking for Shopify stores
  */
 
 (function () {
@@ -349,13 +350,97 @@
     });
   }
 
+  /**
+   * Track page view - called by multiple listeners for reliability
+   */
+  var pageViewTracked = false;
+  
+  function trackPageView() {
+    // Prevent duplicate tracking
+    if (pageViewTracked) {
+      return;
+    }
+    
+    var currentPathname = getPathname();
+    var label =
+      currentPathname.replace(/\//g, "").substring(0, 100) || "home";
+    var event = createEvent(CONFIG.events.PAGE_VIEW, label);
+    processEvent(event);
+    
+    pageViewTracked = true;
+    
+    if (CONFIG.debug) {
+      console.log("Bliz: Page view tracked");
+    }
+  }
+
+  /**
+   * Enhanced page view listener with multiple fallback mechanisms
+   * Handles various Shopify scenarios where DOMContentLoaded may not fire
+   */
   function setupPageViewListener() {
-    document.addEventListener("DOMContentLoaded", function () {
-      var currentPathname = getPathname();
-      var label =
-        currentPathname.replace(/\//g, "").substring(0, 100) || "home";
-      var event = createEvent(CONFIG.events.PAGE_VIEW, label);
-      processEvent(event);
+    // Method 1: Check if DOM is already loaded
+    if (document.readyState === "loading") {
+      // DOM still loading, wait for DOMContentLoaded
+      document.addEventListener("DOMContentLoaded", trackPageView);
+    } else {
+      // DOM already loaded (script loaded late), track immediately
+      if (CONFIG.debug) {
+        console.log("Bliz: DOM already loaded, tracking page view immediately");
+      }
+      trackPageView();
+    }
+    
+    // Method 2: Fallback with window.onload
+    window.addEventListener("load", function() {
+      if (!pageViewTracked) {
+        if (CONFIG.debug) {
+          console.log("Bliz: Using window.onload fallback");
+        }
+        trackPageView();
+      }
+    });
+    
+    // Method 3: Shopify-specific theme events
+    // Many Shopify themes dispatch custom events for section loads
+    document.addEventListener("shopify:section:load", function() {
+      if (!pageViewTracked) {
+        if (CONFIG.debug) {
+          console.log("Bliz: Shopify section loaded, tracking page view");
+        }
+        trackPageView();
+      }
+    });
+    
+    // Shopify theme specific event
+    document.addEventListener("page:loaded", function() {
+      if (!pageViewTracked) {
+        if (CONFIG.debug) {
+          console.log("Bliz: Page loaded event detected");
+        }
+        trackPageView();
+      }
+    });
+    
+    // Method 4: Timeout fallback (last resort for async-loaded scripts)
+    // If nothing else worked after 500ms, track anyway
+    setTimeout(function() {
+      if (!pageViewTracked) {
+        if (CONFIG.debug) {
+          console.log("Bliz: Using timeout fallback (500ms) for page view");
+        }
+        trackPageView();
+      }
+    }, 500);
+    
+    // Method 5: Handle Shopify AJAX navigation (optional, for themes with AJAX)
+    // Reset tracking flag on popstate (back/forward navigation)
+    window.addEventListener("popstate", function() {
+      if (CONFIG.debug) {
+        console.log("Bliz: Navigation detected (popstate), resetting tracker");
+      }
+      pageViewTracked = false;
+      setTimeout(trackPageView, 100);
     });
   }
 
@@ -387,6 +472,12 @@
     getApiKey: function () {
       return getApiKeyFromScript();
     },
+
+    // Manual page view tracking if needed
+    trackPageView: function() {
+      pageViewTracked = false;
+      trackPageView();
+    },
   };
 
   // Auto-initialize on script load
@@ -403,5 +494,6 @@
     console.log("Bliz: Initialization complete", initResult);
     console.log("Bliz: Event listeners setup complete");
     console.log("Bliz: API key extracted:", getApiKeyFromScript());
+    console.log("Bliz: Document ready state:", document.readyState);
   }
 })();
