@@ -344,8 +344,7 @@
    */
   function setupFormListener() {
     document.addEventListener("submit", function (e) {
-      var formName = e.target.name || e.target.id || "form_submit";
-      var event = createEvent(CONFIG.events.FORM_SUBMIT, formName);
+      var event = createEvent(CONFIG.events.FORM_SUBMIT, 'form_submit');
       processEvent(event);
     });
   }
