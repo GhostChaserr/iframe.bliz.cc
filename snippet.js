@@ -1,7 +1,7 @@
 /**
  * Bliz Tracking Script v1.3
  * Auto-initializing client-side analytics collector
- * Loads session_id from URL params and stores in sessionStorage
+ * Loads session_id from URL params and stores in localStorage
  * Extracts API key from script data-key attribute and adds as Authorization header
  * Fixed CORS handling for cross-origin requests
  * Enhanced page view tracking for Shopify stores
@@ -10,11 +10,10 @@
 (function () {
   "use strict";
 
-  // Configuration
+  // Configuration object with event types and storage keys
   var CONFIG = {
     sessionIdParam: "session_id",
     storageKey: "bliz_session_id",
-    debug: true,
     events: {
       PAGE_VIEW: "PAGE_VIEW",
       LINK_CLICK: "LINK_CLICK",
@@ -23,17 +22,13 @@
     },
   };
 
-  /**
-   * Get query parameter from URL
-   */
+  // Extract query parameter from URL using URLSearchParams API
   function getQueryParam(param) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param) || null;
   }
 
-  /**
-   * Fallback for older browsers without URLSearchParams
-   */
+  // Fallback parameter extraction for older browsers without URLSearchParams support
   function getQueryParamLegacy(param) {
     var search = window.location.search.substring(1);
     var params = search.split("&");
@@ -48,9 +43,7 @@
     return null;
   }
 
-  /**
-   * Extract session_id from URL
-   */
+  // Retrieve session ID from URL query parameters with browser compatibility fallback
   function getSessionIdFromUrl() {
     var sessionId = null;
 
@@ -67,61 +60,40 @@
     return sessionId;
   }
 
-  /**
-   * Store session_id in sessionStorage
-   */
+  // Persist session ID to browser storage for session continuity
   function storeSessionId(sessionId) {
     try {
-      if (window.sessionStorage) {
+      if (window.localStorage) {
         window.localStorage.setItem(CONFIG.storageKey, sessionId);
         return true;
       }
     } catch (e) {
-      // sessionStorage might be blocked or full
-      if (CONFIG.debug) {
-        console.warn("Bliz: Could not store session_id in sessionStorage", e);
-      }
+      // Storage might be blocked or full
     }
 
     return false;
   }
 
-  /**
-   * Retrieve session_id from sessionStorage
-   */
+  // Retrieve previously stored session ID from browser storage
   function getStoredSessionId() {
     try {
-      if (window.sessionStorage) {
+      if (window.localStorage) {
         return window.localStorage.getItem(CONFIG.storageKey);
       }
     } catch (e) {
-      if (CONFIG.debug) {
-        console.warn(
-          "Bliz: Could not retrieve session_id from sessionStorage",
-          e
-        );
-      }
+      // Storage access may fail
     }
 
     return null;
   }
 
-  /**
-   * Initialize Bliz tracking
-   */
+  // Initialize tracking system and establish session context
   function init() {
     var sessionId = getSessionIdFromUrl();
 
     if (sessionId) {
+      // Store new session ID from URL
       var stored = storeSessionId(sessionId);
-
-      if (CONFIG.debug) {
-        console.log("Bliz: Script initialized");
-        console.log("Bliz: Session ID detected:", sessionId);
-        console.log("Bliz: Session stored in sessionStorage:", stored);
-      }
-
-      // Make session_id globally accessible
       window.blizSessionId = sessionId;
 
       return {
@@ -130,22 +102,11 @@
         stored: stored,
       };
     } else {
-      // No session_id found, but script still loaded
+      // Try to retrieve existing session from storage
       var storedSessionId = getStoredSessionId();
-
-      if (CONFIG.debug) {
-        console.log("Bliz: Script initialized");
-        console.log("Bliz: No session_id in URL params");
-
-        if (storedSessionId) {
-          console.log(
-            "Bliz: Found existing session_id in storage:",
-            storedSessionId
-          );
-          window.blizSessionId = storedSessionId;
-        } else {
-          console.log("Bliz: No existing session_id in storage");
-        }
+      
+      if (storedSessionId) {
+        window.blizSessionId = storedSessionId;
       }
 
       return {
@@ -156,36 +117,26 @@
     }
   }
 
-  /**
-   * API endpoint for event tracking
-   */
+  // API endpoint for tracking events
   var API_ENDPOINT = "https://api.bliz.cc/api/v1/page-events";
 
-  /**
-   * Extract API key from script data-key attribute
-   */
+  // Extract API key from script element's data attribute
   function getApiKeyFromScript() {
     var script = document.getElementById('bliz-snippet');
     return script ? script.getAttribute('data-key') : null;
   }
 
-  /**
-   * Get current pathname
-   */
+  // Get current page pathname
   function getPathname() {
     return window.location.pathname;
   }
 
-  /**
-   * Get current timestamp
-   */
+  // Get current timestamp in ISO format
   function getTimestamp() {
     return new Date().toISOString();
   }
 
-  /**
-   * Create event object
-   */
+  // Construct standardized event object with action, label, and context
   function createEvent(action, label, pathname) {
     return {
       action: action || "N/A",
@@ -195,57 +146,28 @@
     };
   }
 
-  /**
-   * Send event to API using XMLHttpRequest (older browser compatible)
-   * Handles CORS preflight requests automatically
-   * Includes Authorization header with API key from data-key attribute
-   */
+  // Send event payload to API server with proper headers and error handling
   function sendEventToAPI(payload) {
     var xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status >= 200 && xhr.status < 300) {
-          if (CONFIG.debug) {
-            console.log("Bliz: Event sent successfully", xhr.status);
-          }
+          // Event sent successfully
         } else if (xhr.status === 0) {
-          // Status 0 typically means CORS error, network failure, or request blocked
-          if (CONFIG.debug) {
-            console.warn(
-              "Bliz: CORS error or network failure - check server CORS configuration"
-            );
-            console.warn(
-              "Bliz: Server should have: app.enableCors({ origin: true, methods: [GET, POST, OPTIONS] })"
-            );
-          }
+          // CORS error or network failure - server should enable CORS
         } else {
-          if (CONFIG.debug) {
-            console.warn("Bliz: API error", xhr.status, xhr.statusText);
-            if (xhr.responseText) {
-              try {
-                console.warn("Bliz: Response:", JSON.parse(xhr.responseText));
-              } catch (e) {
-                console.warn("Bliz: Response:", xhr.responseText);
-              }
-            }
-          }
+          // Handle non-2xx responses silently
         }
       }
     };
 
     xhr.onerror = function () {
-      if (CONFIG.debug) {
-        console.error(
-          "Bliz: Network error - ensure server is accessible and CORS is enabled"
-        );
-      }
+      // Network error occurred
     };
 
     xhr.ontimeout = function () {
-      if (CONFIG.debug) {
-        console.warn("Bliz: Request timeout after 5 seconds");
-      }
+      // Request exceeded timeout threshold
     };
 
     try {
@@ -255,37 +177,24 @@
       xhr.setRequestHeader("accept", "*/*");
       xhr.setRequestHeader("Content-Type", "application/json");
 
-      // Add Authorization header with API key
+      // Include API key in Authorization header for server validation
       if (apiKey) {
         xhr.setRequestHeader("Authorization", "Bearer " + apiKey);
-        if (CONFIG.debug) {
-          console.log("Bliz: Authorization header set with API key");
-        }
-      } else {
-        if (CONFIG.debug) {
-          console.warn("Bliz: No API key found in script data-key attribute");
-        }
       }
 
       xhr.timeout = 5000; // 5 second timeout
       xhr.send(JSON.stringify(payload));
     } catch (e) {
-      if (CONFIG.debug) {
-        console.error("Bliz: Error creating request", e.message);
-      }
+      // Request creation failed
     }
   }
 
-  /**
-   * Process event (log and send to API)
-   */
+  // Package event with session context and send to analytics API
   function processEvent(event) {
     var sessionId = window.blizSessionId || getStoredSessionId();
 
     if (!sessionId) {
-      if (CONFIG.debug) {
-        console.warn("Bliz: No session_id available, skipping event");
-      }
+      // Cannot track event without active session
       return;
     }
 
@@ -297,24 +206,17 @@
       timestamp: event.timestamp,
     };
 
-    if (CONFIG.debug) {
-      console.log("Bliz: Event logged", event);
-      console.log("Bliz: Sending to API:", API_ENDPOINT);
-    }
-
-    // Send event to API using XMLHttpRequest
+    // Transmit event payload to remote server
     sendEventToAPI(payload);
   }
 
-  /**
-   * Listen to click events (buttons and links only)
-   */
+  // Attach global click listener for button and link interactions
   function setupClickListener() {
     document.addEventListener("click", function (e) {
       var target = e.target;
       var tagName = target.tagName.toLowerCase();
 
-      // Only capture clicks on buttons and links
+      // Only track clicks on buttons and links
       if (tagName !== "button" && tagName !== "a") {
         return;
       }
@@ -325,6 +227,7 @@
           ? CONFIG.events.BUTTON_CLICK
           : CONFIG.events.LINK_CLICK;
 
+      // Extract meaningful label from element text or href
       if (tagName === "button") {
         label = target.innerText
           ? target.innerText.substring(0, 100).trim()
@@ -340,9 +243,7 @@
     });
   }
 
-  /**
-   * Listen to form submissions
-   */
+  // Attach global listener for form submission events
   function setupFormListener() {
     document.addEventListener("submit", function (e) {
       var event = createEvent(CONFIG.events.FORM_SUBMIT, 'form_submit');
@@ -350,13 +251,11 @@
     });
   }
 
-  /**
-   * Track page view - called by multiple listeners for reliability
-   */
+  // Track initial page view with duplicate prevention mechanism
   var pageViewTracked = false;
   
   function trackPageView() {
-    // Prevent duplicate tracking
+    // Prevent multiple page view events for same navigation
     if (pageViewTracked) {
       return;
     }
@@ -368,94 +267,62 @@
     processEvent(event);
     
     pageViewTracked = true;
-    
-    if (CONFIG.debug) {
-      console.log("Bliz: Page view tracked");
-    }
   }
 
-  /**
-   * Enhanced page view listener with multiple fallback mechanisms
-   * Handles various Shopify scenarios where DOMContentLoaded may not fire
-   */
+  // Setup multiple fallback mechanisms to ensure page view tracking in various environments
   function setupPageViewListener() {
-    // Method 1: Check if DOM is already loaded
+    // Check if DOM is already fully loaded
     if (document.readyState === "loading") {
-      // DOM still loading, wait for DOMContentLoaded
+      // DOM still loading, wait for completion
       document.addEventListener("DOMContentLoaded", trackPageView);
     } else {
-      // DOM already loaded (script loaded late), track immediately
-      if (CONFIG.debug) {
-        console.log("Bliz: DOM already loaded, tracking page view immediately");
-      }
+      // DOM already loaded, track immediately
       trackPageView();
     }
     
-    // Method 2: Fallback with window.onload
+    // Fallback: Track on window load event if not already tracked
     window.addEventListener("load", function() {
       if (!pageViewTracked) {
-        if (CONFIG.debug) {
-          console.log("Bliz: Using window.onload fallback");
-        }
         trackPageView();
       }
     });
     
-    // Method 3: Shopify-specific theme events
-    // Many Shopify themes dispatch custom events for section loads
+    // Handle Shopify theme custom section load events
     document.addEventListener("shopify:section:load", function() {
       if (!pageViewTracked) {
-        if (CONFIG.debug) {
-          console.log("Bliz: Shopify section loaded, tracking page view");
-        }
         trackPageView();
       }
     });
     
-    // Shopify theme specific event
+    // Handle custom page loaded events from theme scripts
     document.addEventListener("page:loaded", function() {
       if (!pageViewTracked) {
-        if (CONFIG.debug) {
-          console.log("Bliz: Page loaded event detected");
-        }
         trackPageView();
       }
     });
     
-    // Method 4: Timeout fallback (last resort for async-loaded scripts)
-    // If nothing else worked after 500ms, track anyway
+    // Final timeout fallback for late-loaded or async scripts
     setTimeout(function() {
       if (!pageViewTracked) {
-        if (CONFIG.debug) {
-          console.log("Bliz: Using timeout fallback (500ms) for page view");
-        }
         trackPageView();
       }
     }, 500);
     
-    // Method 5: Handle Shopify AJAX navigation (optional, for themes with AJAX)
-    // Reset tracking flag on popstate (back/forward navigation)
+    // Reset tracking on back/forward navigation to track new page views
     window.addEventListener("popstate", function() {
-      if (CONFIG.debug) {
-        console.log("Bliz: Navigation detected (popstate), resetting tracker");
-      }
       pageViewTracked = false;
       setTimeout(trackPageView, 100);
     });
   }
 
-  /**
-   * Setup all event listeners
-   */
+  // Initialize all event tracking listeners
   function setupEventListeners() {
     setupClickListener();
     setupFormListener();
     setupPageViewListener();
   }
 
-  /**
-   * Public API
-   */
+  // Public API for external interaction with tracker
   var BlizTracker = {
     getSessionId: function () {
       return window.blizSessionId || getStoredSessionId();
@@ -465,35 +332,23 @@
       return !!(window.blizSessionId || getStoredSessionId());
     },
 
-    debug: function (enabled) {
-      CONFIG.debug = enabled;
-    },
-
     getApiKey: function () {
       return getApiKeyFromScript();
     },
 
-    // Manual page view tracking if needed
+    // Manually trigger page view tracking if needed
     trackPageView: function() {
       pageViewTracked = false;
       trackPageView();
     },
   };
 
-  // Auto-initialize on script load
-  var initResult = init();
+  // Execute initialization sequence on script load
+  init();
 
-  // Setup event listeners
+  // Activate all event listeners
   setupEventListeners();
 
-  // Make BlizTracker globally accessible
+  // Expose tracker API globally for external use
   window.BlizTracker = BlizTracker;
-
-  // Log initialization result
-  if (CONFIG.debug) {
-    console.log("Bliz: Initialization complete", initResult);
-    console.log("Bliz: Event listeners setup complete");
-    console.log("Bliz: API key extracted:", getApiKeyFromScript());
-    console.log("Bliz: Document ready state:", document.readyState);
-  }
 })();
