@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-K3VN9TJ6");
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
@@ -306,6 +320,16 @@
     </style>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-K3VN9TJ6"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <!-- Widget Loader Script -->
     <!-- <script>
       (function () {
@@ -399,7 +423,7 @@
        * LISTEN FOR WIDGET EVENTS FROM IFRAME
        * This is where you handle real user interactions from Bliz widget.
        * Events include: WIDGET_VIEW, WIDGET_INTERACTION, WIDGET_SUBMIT
-       * 
+       *
        * On WIDGET_SUBMIT, you typically receive promo data, customer info, etc.
        * Use this to:
        *   - Redirect user to checkout with promo code
@@ -434,7 +458,9 @@
               console.log("🎉 User submitted widget!", data);
 
               // 💡 DEMO: Close overlay automatically on submit
-              const overlay = document.getElementById("bliz__overlay_container");
+              const overlay = document.getElementById(
+                "bliz__overlay_container"
+              );
               if (overlay && overlay.parentNode) {
                 overlay.parentNode.removeChild(overlay);
                 document.cookie = "widgetShown=true; path=/; max-age=90000";
@@ -444,8 +470,11 @@
               // 💡 DEMO: Log received promo data (you would use this in real app)
               if (data.promo) {
                 console.log("🎁 Promo Details:", data.promo);
-                console.log("📋 Apply this promo code at checkout:", data.promo.prize);
-                
+                console.log(
+                  "📋 Apply this promo code at checkout:",
+                  data.promo.prize
+                );
+
                 // 💡 EXAMPLE: Redirect to checkout with promo
                 // window.location.href = `/checkout?promo=${encodeURIComponent(data.promo.id)}`;
 
@@ -492,7 +521,9 @@
         window.removeEventListener("message", handleBlizWidgetEvent);
       });
 
-      console.log("🚀 Bliz Widget Event Listener is active. Try submitting the widget!");
+      console.log(
+        "🚀 Bliz Widget Event Listener is active. Try submitting the widget!"
+      );
     </script>
 
     <!-- Header -->
