@@ -18,16 +18,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-    <!-- <script>
-      (function() {
-        var script = document.createElement('script');
-        script.id = "bliz-snippet";
-        script.setAttribute("data-key", "vMCvXZiJ3CAlDqBVOzKLSJ3T6QHUYYfTAGU9bva5aQo");
-        script.src = "./snippet.js";
-        script.async = true;
-        document.head.appendChild(script);
-      })();
-      </script> -->
+    
     <title>Fashion Boutique | Premium Clothing</title>
     <style>
       /* Reset and base styles */
@@ -70,6 +61,7 @@
       .nav-links {
         display: flex;
         list-style: none;
+        align-items: center;
       }
 
       .nav-links li {
@@ -85,6 +77,20 @@
 
       .nav-links a:hover {
         color: #3498db;
+      }
+
+      /* NEW: Special style for Nav Link */
+      .nav-special {
+        color: #e67e22 !important;
+        font-weight: 700 !important;
+        border: 2px solid #e67e22;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+      }
+
+      .nav-special:hover {
+        background-color: #e67e22;
+        color: #fff !important;
       }
 
       /* Hero section */
@@ -115,6 +121,13 @@
         margin-bottom: 2rem;
       }
 
+      .btn-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
       .btn {
         display: inline-block;
         padding: 0.8rem 2rem;
@@ -125,11 +138,24 @@
         font-size: 1rem;
         cursor: pointer;
         text-decoration: none;
-        transition: background-color 0.3s;
+        transition: transform 0.2s, background-color 0.3s;
       }
 
       .btn:hover {
         background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      /* NEW: Prominent Demo Button Style */
+      .btn-accent {
+        background-color: #e67e22; /* Orange to stand out */
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+      }
+
+      .btn-accent:hover {
+        background-color: #d35400;
+        box-shadow: 0 6px 20px rgba(230, 126, 34, 0.6);
       }
 
       /* Featured products section */
@@ -329,203 +355,7 @@
         style="display: none; visibility: hidden"
       ></iframe
     ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <!-- Widget Loader Script -->
-    <!-- <script>
-      (function () {
-        console.log("Initializing Bliz Widget...");
-        /*
-            Input Your Link Here
-        */
-        var widgetURL = "http://localhost:3003/nDf0QT";
-        if (window.dataLayer && Array.isArray(window.dataLayer)) {
-          for (let i = window.dataLayer.length - 1; i >= 0; i--) {
-            if (window.dataLayer[i].widgetURL) {
-              widgetURL = window.dataLayer[i].widgetURL.trim();
-              break;
-            }
-          }
-        }
-
-        var e = widgetURL;
-        var t = "widgetShown";
-        var n = 90000; // Cookie expiration in seconds (25 hours)
-
-        // Don't show if already seen or widget already exists
-        if (
-          document.cookie.indexOf(t + "=true") !== -1 ||
-          document.getElementById("bliz__overlay_container")
-        )
-          return;
-
-        // Create overlay container
-        var o = document.createElement("div");
-        o.id = "bliz__overlay_container";
-        o.className = "bliz__overlay";
-        o.style.cssText =
-          "position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;display:flex;justify-content:center;align-items:center;";
-        o.innerHTML =
-          '<iframe src="' +
-          e +
-          '" class="bliz__iframe" style="position:absolute;top:0;left:0;width:100vw;height:100vh;border:none;" title="Promotion Widget"></iframe>' +
-          '<button id="bliz__close_btn" class="bliz__close_btn" style="position:absolute;top:20px;right:20px;background:#fff;border-radius:50%;width:40px;height:40px;border:2px solid #000;cursor:pointer;font-size:24px;font-weight:bold;z-index:10000;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 5px rgba(0,0,0,0.2);color:#000;">×</button>';
-
-        document.body.appendChild(o);
-
-        // Function to close overlay and set cookie
-        function closeOverlay() {
-          if (o && o.parentNode) {
-            o.parentNode.removeChild(o);
-            document.cookie = t + "=true; path=/; max-age=" + n;
-            console.log("Widget overlay closed and cookie set.");
-          }
-        }
-
-        // Close on manual click
-        var btn = document.getElementById("bliz__close_btn");
-        if (btn) {
-          btn.addEventListener("click", function () {
-            closeOverlay();
-            // Optional: Notify iframe it was closed manually
-            const iframe = o.querySelector("iframe");
-            if (iframe && iframe.contentWindow) {
-              iframe.contentWindow.postMessage("closeWidget", "*");
-            }
-          });
-        }
-
-        // Close on overlay click (outside iframe)
-        o.addEventListener("click", function (event) {
-          if (event.target === o) closeOverlay();
-        });
-
-        // Close on ESC key
-        document.addEventListener("keydown", function (event) {
-          if (event.keyCode === 27) closeOverlay(); // ESC key
-        });
-
-        // Legacy close message (string-based)
-        window.addEventListener("message", function (event) {
-          try {
-            if (typeof event.data === "string" && event.data === "closeWidget") {
-              closeOverlay();
-            }
-          } catch (err) {
-            console.error("Legacy widget postMessage error:", err);
-          }
-        });
-      })();
-    </script>  -->
-
-    <!-- 🚀 Bliz Widget Event Listener — DEMO READY -->
-    <script>
-      /**
-       * LISTEN FOR WIDGET EVENTS FROM IFRAME
-       * This is where you handle real user interactions from Bliz widget.
-       * Events include: WIDGET_VIEW, WIDGET_INTERACTION, WIDGET_SUBMIT
-       *
-       * On WIDGET_SUBMIT, you typically receive promo data, customer info, etc.
-       * Use this to:
-       *   - Redirect user to checkout with promo code
-       *   - Send lead to CRM
-       *   - Fire analytics event
-       *   - Trigger email sequence
-       */
-
-      function handleBlizWidgetEvent(event) {
-        // 🔐 SECURITY: In production, validate origin
-        // if (event.origin !== 'https://bliz.cc') return;
-
-        const data = event.data;
-
-        // Check if it's a Bliz widget event
-        if (data && data.widgetId && data.event) {
-          console.log("✅ Bliz Widget Event Received:", data);
-
-          // Handle different event types
-          switch (data.event) {
-            case "WIDGET_VIEW":
-              console.log("👁️ Widget viewed by user");
-              // You can trigger analytics here
-              break;
-
-            case "WIDGET_INTERACTION":
-              console.log("🖱️ User interacted with widget");
-              // Track engagement or warm up retargeting pixel
-              break;
-
-            case "WIDGET_SUBMIT":
-              console.log("🎉 User submitted widget!", data);
-
-              // 💡 DEMO: Close overlay automatically on submit
-              const overlay = document.getElementById(
-                "bliz__overlay_container"
-              );
-              if (overlay && overlay.parentNode) {
-                overlay.parentNode.removeChild(overlay);
-                document.cookie = "widgetShown=true; path=/; max-age=90000";
-                console.log("Widget overlay auto-closed after submission.");
-              }
-
-              // 💡 DEMO: Log received promo data (you would use this in real app)
-              if (data.promo) {
-                console.log("🎁 Promo Details:", data.promo);
-                console.log(
-                  "📋 Apply this promo code at checkout:",
-                  data.promo.prize
-                );
-
-                // 💡 EXAMPLE: Redirect to checkout with promo
-                // window.location.href = `/checkout?promo=${encodeURIComponent(data.promo.id)}`;
-
-                // 💡 EXAMPLE: Send to CRM or backend
-                // fetch('/api/leads', {
-                //   method: 'POST',
-                //   headers: { 'Content-Type': 'application/json' },
-                //   body: JSON.stringify({
-                //     email: data.customer,
-                //     promoCode: data.promo.prize,
-                //     widgetId: data.widgetId,
-                //     timestamp: data.timestamp
-                //   })
-                // });
-              }
-
-              // 💡 EXAMPLE: Push to GTM dataLayer for analytics
-              if (window.dataLayer) {
-                window.dataLayer.push({
-                  event: "blizWidgetSubmit",
-                  widgetId: data.widgetId,
-                  promoId: data.promoId,
-                  promoTitle: data.promo?.title,
-                  promoCode: data.promo?.prize,
-                  customer: data.customer,
-                  timestamp: data.timestamp,
-                });
-                console.log("📈 Event pushed to dataLayer for analytics.");
-              }
-
-              break;
-
-            default:
-              console.log("📝 Unhandled event type:", data.event);
-          }
-        }
-      }
-
-      // Add event listener
-      window.addEventListener("message", handleBlizWidgetEvent);
-
-      // Cleanup on page unload (optional)
-      window.addEventListener("beforeunload", () => {
-        window.removeEventListener("message", handleBlizWidgetEvent);
-      });
-
-      console.log(
-        "🚀 Bliz Widget Event Listener is active. Try submitting the widget!"
-      );
-    </script>
-
+    
     <!-- Header -->
     <header>
       <nav class="navbar">
@@ -534,7 +364,8 @@
           <li><a href="#home">Home</a></li>
           <li><a href="#featured">Products</a></li>
           <li><a href="about.html">About</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <!-- Added Link in Nav -->
+          <li><a href="onpage-demo.html" class="nav-special">Demo</a></li>
         </ul>
       </nav>
     </header>
@@ -547,7 +378,14 @@
           Discover our premium collection of fashion essentials curated for the
           modern trendsetter.
         </p>
-        <a href="#featured" class="btn">Shop Collection</a>
+        
+        <!-- PROMINENT BUTTON CONTAINER -->
+        <div class="btn-container">
+            <a href="#featured" class="btn">Shop Collection</a>
+            <!-- NEW PROMINENT LINK -->
+            <a href="onpage-demo.html" class="btn btn-accent">Play to Win Discounts →</a>
+        </div>
+        
       </div>
     </section>
 
