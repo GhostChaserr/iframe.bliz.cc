@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Integration Demo (Desktop & Mobile)</title>
+    <style>
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h2 { margin-bottom: 10px; color: #333; }
+        p.desc { color: #666; margin-bottom: 30px; text-align: center; max-width: 600px; line-height: 1.5; }
+
+        /* --- Method 1: Desktop (Embedded Frame) --- */
+        .desktop-wrapper {
+            display: none; /* Hidden on mobile */
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        /* UPDATED: Specific Desktop Dimensions */
+        .desktop-game-container {
+            width: 850px;
+            height: 700px;
+            background: #000; /* Dark frame for contrast */
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* --- Method 2: Mobile (Button + Modal) --- */
+        .mobile-wrapper {
+            display: none; /* Hidden on desktop */
+            width: 100%;
+            text-align: center;
+        }
+
+        .play-btn {
+            background-color: #e67e22; /* Orange accent */
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(230, 126, 34, 0.4);
+            transition: transform 0.2s;
+        }
+        .play-btn:active { transform: scale(0.95); }
+
+        /* Full Screen Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: flex-end;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* --- Shared Iframe Style --- */
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- Event Toast Notification (Simplified Logger) --- */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none; /* Let clicks pass through */
+        }
+
+        .toast {
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 300px;
+        }
+
+        .toast strong { color: #4facfe; display: block; margin-bottom: 4px;}
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* --- Responsive Switcher --- */
+        @media (min-width: 860px) { /* Breakpoint slightly larger than frame */
+            .desktop-wrapper { display: block; }
+        }
+        @media (max-width: 859px) {
+            .mobile-wrapper { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Game Integration Demo</h2>
+    <p class="desc">
+        <strong>Desktop:</strong> Fixed 850x700 frame.<br>
+        <strong>Mobile:</strong> Click button to open full-screen.<br>
+        <em>Events will appear in the top-right corner.</em>
+    </p>
+
+    <!-- CONTAINER 1: Desktop (Static Load) -->
+    <div class="desktop-wrapper">
+        <div class="desktop-game-container">
+            <iframe id="desktop-iframe" title="Desktop Game"></iframe>
+        </div>
+        <div style="text-align: center; color: #999; margin-top: 10px; font-size: 12px;">Desktop Mode (850px x 700px)</div>
+    </div>
+
+    <!-- CONTAINER 2: Mobile (Lazy Load) -->
+    <div class="mobile-wrapper">
+        <button id="start-btn" class="play-btn">Tap to Play & Win</button>
+    </div>
+
+    <!-- Mobile Modal -->
+    <div id="mobile-modal" class="modal">
+        <div class="modal-header">
+            <button id="close-btn" class="close-btn">✕ Close</button>
+        </div>
+        <iframe id="mobile-iframe" title="Mobile Game"></iframe>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-area"></div>
+
+    <script>
+        /* =========================================
+           1. CONFIGURATION
+           ========================================= */
+           
+        const GAME_URL = "";
+
+        /* =========================================
+           2. APPROACH A: STATIC LOADING (Desktop)
+           The game loads immediately inside the 850x700 box.
+           ========================================= */
+        const desktopFrame = document.getElementById('desktop-iframe');
+        if (desktopFrame) {
+            desktopFrame.src = GAME_URL;
+        }
+
+        /* =========================================
+           3. APPROACH B: LAZY LOADING (Mobile)
+           The game loads only when the user clicks the button.
+           ========================================= */
+        const startBtn = document.getElementById('start-btn');
+        const modal = document.getElementById('mobile-modal');
+        const closeBtn = document.getElementById('close-btn');
+        const mobileFrame = document.getElementById('mobile-iframe');
+
+        startBtn.addEventListener('click', () => {
+            if (!mobileFrame.src || mobileFrame.src === "") {
+                mobileFrame.src = GAME_URL;
+            }
+            modal.style.display = 'flex';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        /* =========================================
+           4. EVENT HANDLING (Communication)
+           Listen for messages sent from the iframe.
+           ========================================= */
+        window.addEventListener("message", (event) => {
+            
+            const data = event.data;
+
+            // Check if it's a valid widget event
+            if (data && data.widgetId && data.event) {
+                
+                let userMessage = "";
+
+                // Map events to user-friendly messages
+                switch (data.event) {
+                    case 'WIDGET_VIEW':
+                        userMessage = "Game Loaded successfully";
+                        break;
+                    case 'WIDGET_INTERACTION':
+                        userMessage = "User is interacting...";
+                        break;
+                    case 'WIDGET_SUBMIT':
+                    case 'WIDGET_INTERACTION_FINISHED':
+                        const prize = data.promo?.prize || "Mystery Reward";
+                        userMessage = `🎉 User won: ${prize}`;
+                        break;
+                    case 'WIDGET_CONSENT_GAME_START':
+                        userMessage = "Game Started (Consent Given)";
+                        break;
+                    default:
+                        return; // Ignore other events
+                }
+
+                // Show the toast notification
+                showToast(data.event, userMessage);
+            }
+        });
+
+        /* Helper: Visual Popup Logic */
+        function showToast(title, message) {
+            const container = document.getElementById('toast-area');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<strong>${title}</strong> ${message}`;
+            
+            container.appendChild(toast);
+
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
