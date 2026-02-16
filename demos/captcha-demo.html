@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Bliz Shield Integration</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .checkout-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        h1 { margin-top: 0; font-size: 24px; color: #1f2937; }
+        .price { font-size: 32px; font-weight: bold; color: #111; margin-bottom: 20px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; color: #6b7280; margin-bottom: 5px; font-weight: 600;}
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #d1d5db; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+        }
+
+        /* The Container where Bliz will load */
+        #captcha-box {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+            /* Height is handled by the SDK now */
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .pay-button:hover:not(:disabled) {
+            background-color: #4338ca;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <h1>Review Order</h1>
+        <div class="price">$49.00</div>
+
+        <form action="#" method="POST" onsubmit="alert('Order Placed Successfully! Token: ' + this.bliz_verification_token.value); return false;">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="john@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" placeholder="4242 4242 4242 4242" required>
+            </div>
+
+            <!-- 1. CONTAINER FOR THE GAME -->
+            <!-- The SDK will clear this text and inject the iframe -->
+            <div id="captcha-box">
+                <p style="text-align:center; padding-top:20px; color:#ccc;">Loading Security...</p>
+            </div>
+
+            <!-- 2. SUBMIT BUTTON (Will be locked by script) -->
+            <button type="submit" class="pay-button" id="checkout-btn">
+                Pay Now
+            </button>
+        </form>
+    </div>
+
+    <!-- 3. CLIENT SCRIPT INTEGRATION -->
+    <!-- 
+         data-captcha-id: The ID from your URL (bliz.cc/kO48vw -> kO48vw) 
+         data-container: The ID of the div above 
+    -->
+    <script 
+        src='../shield.js'
+        data-captcha-id="kO48vw" 
+        data-container="captcha-box">
+    </script>
+
+</body>
+</html>

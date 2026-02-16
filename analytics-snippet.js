@@ -118,7 +118,7 @@
   }
 
   // API endpoint for tracking events
-  var API_ENDPOINT = "https://api.bliz.cc/api/v1/page-events";
+  var API_ENDPOINT = "http://localhost:3000/api/v1/page-events";
 
   // Extract API key from script element's data attribute
   function getApiKeyFromScript() {
